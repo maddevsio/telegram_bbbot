@@ -56,14 +56,22 @@ func main() {
 
 	router.GET("/" + bot.Token, func(c *gin.Context) {
 		var update tgbotapi.Update
-		c.BindJSON(&update)
-		updatesChan <- update
+		err := c.BindJSON(&update)
+		if err != nil {
+			log.Println(err)
+		} else {
+			updatesChan <- update
+		}
 	})
 
 	router.POST("/" + bot.Token, func(c *gin.Context) {
 		var update tgbotapi.Update
-		c.BindJSON(&update)
-		updatesChan <- update
+		err := c.BindJSON(&update)
+		if err != nil {
+			log.Println(err)
+		} else {
+			updatesChan <- update
+		}
 	})
 
 	go router.Run(":" + cfg.Port)
