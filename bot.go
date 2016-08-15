@@ -42,7 +42,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	updates := bot.ListenForWebhook("/" + bot.Token)
 
 	router := gin.New()
 	router.Use(gin.Logger())
@@ -53,9 +52,23 @@ func main() {
 		c.HTML(http.StatusOK, "index.tmpl.html", nil)
 	})
 
+	updatesChan := make(chan tgbotapi.Update, 100)
+
+	router.GET("/" + bot.Token, func(c *gin.Context) {
+		var update tgbotapi.Update
+		c.BindJSON(&update)
+		updatesChan <- update
+	})
+
+	router.POST("/" + bot.Token, func(c *gin.Context) {
+		var update tgbotapi.Update
+		c.BindJSON(&update)
+		updatesChan <- update
+	})
+
 	go router.Run(":" + cfg.Port)
 
-	for update := range updates {
+	for update := range updatesChan {
 		log.Printf("%+v\n", update)
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 		msg.ReplyToMessageID = update.Message.MessageID
