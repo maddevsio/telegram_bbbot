@@ -1,0 +1,14 @@
+{
+  "name": "Telegram Bug Bounty Bot",
+  "description": "Go Telegram Bug Bounty Bot App",
+  "keywords": [
+    "telegram",
+    "bug",
+    "bug bounty",
+    "bug bounty program"
+  ],
+  "image": "heroku/go:1.6",
+  "mount_dir": "src/github.com/cyberlight/telegram_bbbot",
+  "website": "https://github.com/cyberlight/telegram_bbbot",
+  "repository": "https://github.com/cyberlight/telegram_bbbot"
+}
