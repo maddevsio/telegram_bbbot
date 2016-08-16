@@ -89,8 +89,8 @@ func main() {
 							log.Printf("Error: %s", err.Error())
 						}
 
-						hiText := fmt.Sprintf("Привет! %s Я баг баунти бот!",
-							update.Message.NewChatMember.FirstName)
+						hiText := fmt.Sprintf("Привет! @%s Я баг баунти бот!",
+							update.Message.NewChatMember.UserName)
 						msg := tgbotapi.NewMessage(update.Message.Chat.ID, hiText)
 
 						bot.Send(msg)
@@ -101,21 +101,28 @@ func main() {
 							msg = tgbotapi.NewMessage(update.Message.Chat.ID, hiText)
 							bot.Send(msg)
 						}
-					} else {
-						hiText := "Всем привет! Я баг баунти бот!"
-						msg := tgbotapi.NewMessage(update.Message.Chat.ID, hiText)
-						bot.Send(msg)
 					}
+				}
+
+				if update.Message.LeftChatMember != nil {
+					hiText := fmt.Sprintf("Очень жаль! @%s покинул нас :(",
+						update.Message.LeftChatMember.UserName)
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, hiText)
+					bot.Send(msg)
 				}
 			}
 		}
 
 		if bot.IsMessageToMe(*update.Message) {
-			_, err := bot.Send(tgbotapi.NewChatAction(update.Message.Chat.ID, tgbotapi.ChatTyping))
-			if err != nil {
-				log.Printf("Error: %s", err.Error())
+			if strings.Contains(update.Message.Text, "что нового?") {
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Пока ничего нового! :)")
+				msg.ReplyToMessageID = update.Message.MessageID
+				bot.Send(msg)
 			}
-			if strings.Contains(update.Message.Text, "что нового") {
+		}
+
+		if update.Message.IsCommand() {
+			if strings.Contains(update.Message.Text, "/что_нового") {
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Пока ничего нового! :)")
 				msg.ReplyToMessageID = update.Message.MessageID
 				bot.Send(msg)
