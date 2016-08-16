@@ -7,6 +7,7 @@ import (
 	"gopkg.in/telegram-bot-api.v4"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type config struct {
@@ -54,7 +55,7 @@ func main() {
 
 	updatesChan := make(chan tgbotapi.Update, 100)
 
-	router.GET("/" + bot.Token, func(c *gin.Context) {
+	handleWebHook := func(c *gin.Context) {
 		var update tgbotapi.Update
 		err := c.BindJSON(&update)
 		if err != nil {
@@ -62,25 +63,63 @@ func main() {
 		} else {
 			updatesChan <- update
 		}
-	})
+	}
 
-	router.POST("/" + bot.Token, func(c *gin.Context) {
-		var update tgbotapi.Update
-		err := c.BindJSON(&update)
-		if err != nil {
-			log.Println(err)
-		} else {
-			updatesChan <- update
-		}
-	})
+	router.GET("/" + bot.Token, handleWebHook)
+	router.POST("/" + bot.Token, handleWebHook)
 
 	go router.Run(":" + cfg.Port)
 
 	for update := range updatesChan {
 		log.Printf("%+v\n", update)
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-		msg.ReplyToMessageID = update.Message.MessageID
 
-		bot.Send(msg)
+		if update.Message == nil {
+			continue
+		}
+
+		if update.Message.Chat.IsGroup()  {
+			u, err := bot.GetMe()
+			if err != nil {
+				log.Printf("Error: %s", err.Error())
+			}else {
+				if update.Message.NewChatMember != nil {
+					if u.UserName != update.Message.NewChatMember.UserName {
+						_, err := bot.Send(tgbotapi.NewChatAction(update.Message.Chat.ID, tgbotapi.ChatTyping))
+						if err != nil {
+							log.Printf("Error: %s", err.Error())
+						}
+
+						hiText := fmt.Sprintf("Привет! %s Я баг баунти бот!",
+							update.Message.NewChatMember.FirstName)
+						msg := tgbotapi.NewMessage(update.Message.Chat.ID, hiText)
+
+						bot.Send(msg)
+
+						count, err := bot.GetChatMembersCount(update.Message.Chat.ChatConfig())
+						if err == nil {
+							hiText = fmt.Sprintf("Нас уже %d !", count)
+							msg = tgbotapi.NewMessage(update.Message.Chat.ID, hiText)
+							bot.Send(msg)
+						}
+					} else {
+						hiText := "Всем привет! Я баг баунти бот!"
+						msg := tgbotapi.NewMessage(update.Message.Chat.ID, hiText)
+						bot.Send(msg)
+					}
+				}
+			}
+		}
+
+		if bot.IsMessageToMe(*update.Message) {
+			_, err := bot.Send(tgbotapi.NewChatAction(update.Message.Chat.ID, tgbotapi.ChatTyping))
+			if err != nil {
+				log.Printf("Error: %s", err.Error())
+			}
+			if strings.Contains(update.Message.Text, "что нового") {
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Пока ничего нового! :)")
+				msg.ReplyToMessageID = update.Message.MessageID
+				bot.Send(msg)
+			}
+		}
 	}
 }
