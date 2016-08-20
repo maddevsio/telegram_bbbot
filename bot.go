@@ -22,6 +22,7 @@ type config struct {
 	HOSearchUrl string `env:"TELEGRAM_BBBOT_HO_SEARCH_URL"`
 	BotChannel string `env:"TELEGRAM_BBBOT_CHANNEL"`
 	PingHost   string `env:"TELEGRAM_BBBOT_HOST"`
+	H1HackSearchUrl string `env:"TELEGRAM_BBBOT_H1_HACK_SEARCH_URL"`
 }
 
 var (
@@ -128,9 +129,12 @@ func main() {
 		FireBaseUrl:   cfg.FireBaseUrl,
 		PathToLocalDb: cfg.PathToLocalDb,
 		SearchUrl:     cfg.HOSearchUrl,
+		HacktivitySearchUrl: cfg.H1HackSearchUrl,
 	}
 
 	hoCrawler := bbcrawler.NewHackerOneCrowler(hoConfig)
+	h1HackCrawler := bbcrawler.NewH1HacktivityCrowler(hoConfig)
+
 	bot, err := tgbotapi.NewBotAPI(cfg.Token)
 	if err != nil {
 		log.Panic(TelegramBotApiError(err))
@@ -148,7 +152,10 @@ func main() {
 	updatesChan := make(chan tgbotapi.Update, 100)
 	initRouting(bot, cfg, updatesChan)
 	go hoCrawler.Crawl()
-	done := false
+	go h1HackCrawler.Crawl()
+
+	doneH1Crawler := false
+	doneH1Hacktivity := false
 	for {
 		select {
 		case update := <- updatesChan:
@@ -163,7 +170,7 @@ func main() {
 							"```text \n" +
 							"%s" +
 							"```\n" +
-							"[%s](see on hackerone post)\n",
+							"%s\n",
 							v.Handle,
 							v.StrippedPolicy,
 							fmt.Sprintf("https://hackerone.com%s", v.Url),
@@ -173,11 +180,36 @@ func main() {
 				}
 			}
 			hoCrawler.ClearNewRecords()
-			done = true
+			doneH1Crawler = true
+		case <-h1HackCrawler.Done:
+			records := h1HackCrawler.GetNewRecords().([]bbcrawler.H1HactivityRecord)
+			if len(records) > 0 {
+				for _, v := range records {
+					msg := tgbotapi.NewMessageToChannel(cfg.BotChannel,
+						fmt.Sprintf(
+							"_Hacktivity_ from *%s*\n" +
+							"```text \n" +
+							"%s\n" +
+							"```\n" +
+							"%s\n",
+							v.Reporter.Username,
+							v.Title,
+							v.Url,
+						))
+					msg.ParseMode = "Markdown"
+					bot.Send(msg)
+				}
+			}
+			h1HackCrawler.ClearNewRecords()
+			doneH1Hacktivity = true
 		case <-time.After(1 * time.Minute):
-			if done {
-				done = false
+			if doneH1Crawler {
+				doneH1Crawler = false
 				go hoCrawler.Crawl()
+			}
+			if doneH1Hacktivity {
+				doneH1Hacktivity = false
+				go h1HackCrawler.Crawl()
 			}
 		case <-time.After(30 * time.Second):
 			c := http.Client{
