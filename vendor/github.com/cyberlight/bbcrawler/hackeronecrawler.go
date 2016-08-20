@@ -163,8 +163,9 @@ func NewHackerOneCrowler(config *HackerOneCrawlerConfig) *HackerOneCrawler {
 }
 
 type HackerOneCrawlerConfig struct {
-	SearchUrl     string
-	PathToLocalDb string
-	FireBaseUrl   string
-	FireBaseToken string
+	SearchUrl           string
+	PathToLocalDb       string
+	FireBaseUrl         string
+	FireBaseToken       string
+	HacktivitySearchUrl string
 }

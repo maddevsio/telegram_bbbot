@@ -14,7 +14,7 @@
 		},
 		{
 			"ImportPath": "github.com/cyberlight/bbcrawler",
-			"Rev": "00fa0d3feb8729031d58016b6f57de45429cd2d1"
+			"Rev": "248e5b58f4e0e97b05cde83dee881c2f014478a5"
 		},
 		{
 			"ImportPath": "github.com/gin-gonic/gin",
@@ -76,7 +76,7 @@
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
-			"Rev": "f7716cbe52baa25d2e9b0d0da546fcf909fc16b4"
+			"Rev": "e4d366fc3c7938e2958e662b4258c7a89e1f0e3e"
 		}
 	]
 }

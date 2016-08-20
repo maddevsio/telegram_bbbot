@@ -1,22 +1,27 @@
 package main
 
 import (
+	"fmt"
 	"github.com/cyberlight/bbcrawler"
 	"time"
-	"fmt"
 )
 
 func main() {
 	config := &bbcrawler.HackerOneCrawlerConfig{
-		SearchUrl:     "URL",
-		PathToLocalDb: "DB",
-		FireBaseUrl:   "https://project_name.firebaseio.com",
-		FireBaseToken: "TOKEN",
+		SearchUrl:           "URL",
+		HacktivitySearchUrl: "URL",
+		PathToLocalDb:       "DB",
+		FireBaseUrl:         "URL",
+		FireBaseToken:       "TOKEN",
 	}
 	crawler := bbcrawler.NewHackerOneCrowler(config)
+	h1HackCrawler := bbcrawler.NewH1HacktivityCrowler(config)
 
 	go crawler.Crawl()
-	done := false
+	go h1HackCrawler.Crawl()
+
+	doneCrawler := false
+	doneH1Crawler := false
 	for {
 		select {
 		case <-crawler.Done:
@@ -24,11 +29,21 @@ func main() {
 			fmt.Println()
 			fmt.Println("<=====New Records: ", len(news))
 			crawler.ClearNewRecords()
-			done = true
+			doneCrawler = true
+		case <-h1HackCrawler.Done:
+			news := h1HackCrawler.GetNewRecords().([]bbcrawler.H1HactivityRecord)
+			fmt.Println()
+			fmt.Println("<=====New Records Hacktivity: ", len(news))
+			h1HackCrawler.ClearNewRecords()
+			doneH1Crawler = true
 		case <-time.After(1 * time.Minute):
-			if done {
-				done = false
+			if doneCrawler {
+				doneCrawler = false
 				go crawler.Crawl()
+			}
+			if doneH1Crawler {
+				doneH1Crawler = false
+				go h1HackCrawler.Crawl()
 			}
 		}
 	}
