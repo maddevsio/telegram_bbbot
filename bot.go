@@ -21,6 +21,7 @@ type config struct {
 	PathToLocalDb string `env:"TELEGRAM_BBBOT_PATH_TO_LOCAL_DB"`
 	HOSearchUrl string `env:"TELEGRAM_BBBOT_HO_SEARCH_URL"`
 	BotChannel string `env:"TELEGRAM_BBBOT_CHANNEL"`
+	PingHost   string `env:"TELEGRAM_BBBOT_HOST"`
 }
 
 var (
@@ -182,7 +183,7 @@ func main() {
 			c := http.Client{
 				Timeout: 10*time.Second,
 			}
-			c.Get(cfg.Url)
+			c.Get(cfg.PingHost)
 		}
 
 	}
