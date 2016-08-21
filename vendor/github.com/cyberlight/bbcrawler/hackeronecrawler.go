@@ -168,4 +168,5 @@ type HackerOneCrawlerConfig struct {
 	FireBaseUrl         string
 	FireBaseToken       string
 	HacktivitySearchUrl string
+	BugCrowdProgramsUrl string
 }

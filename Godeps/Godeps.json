@@ -14,7 +14,7 @@
 		},
 		{
 			"ImportPath": "github.com/cyberlight/bbcrawler",
-			"Rev": "248e5b58f4e0e97b05cde83dee881c2f014478a5"
+			"Rev": "80c4f282c9f4c170378bd3661121fc8d27db74bb"
 		},
 		{
 			"ImportPath": "github.com/gin-gonic/gin",

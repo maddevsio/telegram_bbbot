@@ -4,6 +4,10 @@ type Fetcher interface {
 	Fetch(url string, params map[string]string) ([]byte, error)
 }
 
+type UniversalFetcher interface {
+	Fetch(fetchUrl string) (interface{}, error)
+}
+
 type Reader interface {
 	Read(data []byte) (interface{}, error)
 }
