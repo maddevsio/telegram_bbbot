@@ -3,6 +3,15 @@
 	"GoVersion": "go1.6",
 	"Deps": [
 		{
+			"ImportPath": "github.com/PuerkitoBio/goquery",
+			"Comment": "v1.0.0",
+			"Rev": "7f4291566cf7cac3be222a933e01a2bed97532b1"
+		},
+		{
+			"ImportPath": "github.com/andybalholm/cascadia",
+			"Rev": "3ad29d1ad1c4f2023e355603324348cf1f4b2d48"
+		},
+		{
 			"ImportPath": "github.com/boltdb/bolt",
 			"Comment": "v1.2.1-15-g94c8db5",
 			"Rev": "94c8db596809690a3f7046fa83c7b0dda13a3222"
@@ -58,6 +67,10 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
+			"Rev": "2e9cee70ee697e0a2ef894b560dda50dec7dff58"
+		},
+		{
+			"ImportPath": "golang.org/x/net/html",
 			"Rev": "2e9cee70ee697e0a2ef894b560dda50dec7dff58"
 		},
 		{
