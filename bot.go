@@ -23,6 +23,7 @@ type config struct {
 	BotChannel string `env:"TELEGRAM_BBBOT_CHANNEL"`
 	PingHost   string `env:"TELEGRAM_BBBOT_HOST"`
 	H1HackSearchUrl string `env:"TELEGRAM_BBBOT_H1_HACK_SEARCH_URL"`
+	BugCrowdNewProgramUrl string `env:"TELEGRAM_BBBOT_BUGCROWD_NEW_PROG_URL"`
 }
 
 var (
@@ -130,10 +131,12 @@ func main() {
 		PathToLocalDb: cfg.PathToLocalDb,
 		SearchUrl:     cfg.HOSearchUrl,
 		HacktivitySearchUrl: cfg.H1HackSearchUrl,
+		BugCrowdProgramsUrl: cfg.BugCrowdNewProgramUrl,
 	}
 
 	hoCrawler := bbcrawler.NewHackerOneCrowler(hoConfig)
 	h1HackCrawler := bbcrawler.NewH1HacktivityCrowler(hoConfig)
+	bugCrowdNewProgCrawler := bbcrawler.NewBugCrowdCrawler(hoConfig)
 
 	bot, err := tgbotapi.NewBotAPI(cfg.Token)
 	if err != nil {
@@ -153,9 +156,12 @@ func main() {
 	initRouting(bot, cfg, updatesChan)
 	go hoCrawler.Crawl()
 	go h1HackCrawler.Crawl()
+	go bugCrowdNewProgCrawler.Crawl()
 
 	doneH1Crawler := false
 	doneH1Hacktivity := false
+	doneBCNewProg := false
+
 	for {
 		select {
 		case update := <- updatesChan:
@@ -202,7 +208,24 @@ func main() {
 			}
 			h1HackCrawler.ClearNewRecords()
 			doneH1Hacktivity = true
-		case <-time.After(1 * time.Minute):
+		case <-bugCrowdNewProgCrawler.Done:
+			records := bugCrowdNewProgCrawler.GetNewRecords().([]bbcrawler.BugCrowdNewProgramsRecord)
+			if len(records) > 0 {
+				for _, v := range records {
+					msg := tgbotapi.NewMessageToChannel(cfg.BotChannel,
+						fmt.Sprintf(
+							"\n_Bugcrowd.com_ new program *%s*\n" +
+							"%s\n",
+							v.Name,
+							v.Link,
+						))
+					msg.ParseMode = "Markdown"
+					bot.Send(msg)
+				}
+			}
+			bugCrowdNewProgCrawler.ClearNewRecords()
+			doneBCNewProg = true
+		case <-time.After(2 * time.Minute):
 			if doneH1Crawler {
 				doneH1Crawler = false
 				go hoCrawler.Crawl()
@@ -210,6 +233,10 @@ func main() {
 			if doneH1Hacktivity {
 				doneH1Hacktivity = false
 				go h1HackCrawler.Crawl()
+			}
+			if doneBCNewProg {
+				doneBCNewProg = false
+				go bugCrowdNewProgCrawler.Crawl()
 			}
 		case <-time.After(30 * time.Second):
 			c := http.Client{
