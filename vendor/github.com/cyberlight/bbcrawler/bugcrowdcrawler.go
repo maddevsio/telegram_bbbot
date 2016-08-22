@@ -2,7 +2,6 @@ package bbcrawler
 
 import (
 	"fmt"
-	"os"
 	"sync"
 )
 
@@ -21,9 +20,7 @@ type BugCrowdCrawler struct {
 
 func (b *BugCrowdCrawler) Crawl() {
 	fmt.Println("Check database consistancy Bugcrowd")
-	if _, err := os.Stat(b.config.PathToLocalDb); os.IsNotExist(err) {
-		b.syncDb()
-	} else if empty, err := b.store.IsEmpty(); empty && err == nil {
+	if empty, err := b.store.IsEmpty(); empty && err == nil {
 		b.syncDb()
 	} else if err != nil {
 		fmt.Println("<===== Sync Bug crowd error: ", err)

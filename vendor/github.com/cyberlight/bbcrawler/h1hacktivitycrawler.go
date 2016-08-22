@@ -2,7 +2,6 @@ package bbcrawler
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"sync"
 )
@@ -68,9 +67,7 @@ type H1HacktivityCrawler struct {
 
 func (h *H1HacktivityCrawler) Crawl() {
 	fmt.Println("Check database consistancy Hacktivity")
-	if _, err := os.Stat(h.config.PathToLocalDb); os.IsNotExist(err) {
-		h.syncDb()
-	} else if empty, err := h.store.IsEmpty(); empty && err == nil {
+	if empty, err := h.store.IsEmpty(); empty && err == nil {
 		h.syncDb()
 	} else if err != nil {
 		fmt.Println("<===== Sync error: ", err)
