@@ -1,6 +1,7 @@
 {
 	"ImportPath": "github.com/cyberlight/telegram_bbbot",
 	"GoVersion": "go1.6",
+	"GodepVersion": "v74",
 	"Deps": [
 		{
 			"ImportPath": "github.com/PuerkitoBio/goquery",
@@ -12,18 +13,13 @@
 			"Rev": "3ad29d1ad1c4f2023e355603324348cf1f4b2d48"
 		},
 		{
-			"ImportPath": "github.com/boltdb/bolt",
-			"Comment": "v1.2.1-15-g94c8db5",
-			"Rev": "94c8db596809690a3f7046fa83c7b0dda13a3222"
-		},
-		{
 			"ImportPath": "github.com/caarlos0/env",
 			"Comment": "v2.0-21-g8030fe5",
 			"Rev": "8030fe5519ecb59ee38cb3c534b86dc868f23262"
 		},
 		{
 			"ImportPath": "github.com/cyberlight/bbcrawler",
-			"Rev": "80c4f282c9f4c170378bd3661121fc8d27db74bb"
+			"Rev": "69739735b09d9860227e8b8bcc85b1fb3b3d2736"
 		},
 		{
 			"ImportPath": "github.com/gin-gonic/gin",
@@ -31,30 +27,22 @@
 			"Rev": "f931d1ea80ae95a6fc739213cdd9399bd2967fb6"
 		},
 		{
+			"ImportPath": "github.com/gin-gonic/gin/binding",
+			"Comment": "v1.0rc1-268-gf931d1e",
+			"Rev": "f931d1ea80ae95a6fc739213cdd9399bd2967fb6"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/gin/render",
+			"Comment": "v1.0rc1-268-gf931d1e",
+			"Rev": "f931d1ea80ae95a6fc739213cdd9399bd2967fb6"
+		},
+		{
 			"ImportPath": "github.com/golang/protobuf/proto",
-			"Rev": "2c1988e8c18d14b142c0b472624f71647cf39adb"
-		},
-		{
-			"ImportPath": "github.com/labstack/gommon/color",
-			"Comment": "v0.0.3-28-g25c3ce2",
-			"Rev": "25c3ce2d2abe76d8dd935305f1a8c1063dd3aac3"
-		},
-		{
-			"ImportPath": "github.com/labstack/gommon/log",
-			"Comment": "v0.0.3-28-g25c3ce2",
-			"Rev": "25c3ce2d2abe76d8dd935305f1a8c1063dd3aac3"
+			"Rev": "7390af9dcd3c33042ebaf2474a1724a83cf1a7e6"
 		},
 		{
 			"ImportPath": "github.com/manucorporat/sse",
 			"Rev": "ee05b128a739a0fb76c7ebd3ae4810c1de808d6d"
-		},
-		{
-			"ImportPath": "github.com/mattn/go-colorable",
-			"Rev": "3dac7b4f76f6e17fb39b768b89e3783d16e237fe"
-		},
-		{
-			"ImportPath": "github.com/mattn/go-isatty",
-			"Rev": "56b76bdf51f7708750eac80fa38b952bb9f32639"
 		},
 		{
 			"ImportPath": "github.com/melvinmt/firebase",
@@ -67,15 +55,15 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
-			"Rev": "2e9cee70ee697e0a2ef894b560dda50dec7dff58"
+			"Rev": "fb93926129b8ec0056f2f458b1f519654814edf0"
 		},
 		{
 			"ImportPath": "golang.org/x/net/html",
-			"Rev": "2e9cee70ee697e0a2ef894b560dda50dec7dff58"
+			"Rev": "fb93926129b8ec0056f2f458b1f519654814edf0"
 		},
 		{
-			"ImportPath": "golang.org/x/sys/unix",
-			"Rev": "a646d33e2ee3172a661fc09bca23bb4889a41bc8"
+			"ImportPath": "golang.org/x/net/html/atom",
+			"Rev": "fb93926129b8ec0056f2f458b1f519654814edf0"
 		},
 		{
 			"ImportPath": "gopkg.in/go-playground/validator.v8",
@@ -89,7 +77,7 @@
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
-			"Rev": "e4d366fc3c7938e2958e662b4258c7a89e1f0e3e"
+			"Rev": "f7716cbe52baa25d2e9b0d0da546fcf909fc16b4"
 		}
 	]
 }

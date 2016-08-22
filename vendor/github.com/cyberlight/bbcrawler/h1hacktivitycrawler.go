@@ -149,6 +149,7 @@ func NewH1HacktivityCrowler(config *HackerOneCrawlerConfig) *H1HacktivityCrawler
 		store: &H1HacktivityStore{
 			PathToDb:   config.PathToLocalDb,
 			newRecords: make([]H1HactivityRecord, 0),
+			all: make(map[string]H1HactivityRecord),
 		},
 		fbSync: FireBaseSync{
 			Token:   config.FireBaseToken,

@@ -2,7 +2,6 @@ package bbcrawler
 
 import (
 	"fmt"
-	"github.com/labstack/gommon/log"
 	"os"
 	"sync"
 )
@@ -90,7 +89,7 @@ func (h *HackerOneCrawler) syncDb() {
 		fmt.Println("Write key: ", k)
 		err := h.store.Store(v)
 		if err != nil {
-			log.Println("Error write to local database: ", err)
+			fmt.Println("Error write to local database: ", err)
 		}
 	}
 }
@@ -150,6 +149,7 @@ func NewHackerOneCrowler(config *HackerOneCrawlerConfig) *HackerOneCrawler {
 		store: &HackerOneStore{
 			PathToDb:   config.PathToLocalDb,
 			newRecords: make([]HackerOneRecord, 0),
+			all: make(map[string]HackerOneRecord),
 		},
 		fbSync: FireBaseSync{
 			Token:   config.FireBaseToken,

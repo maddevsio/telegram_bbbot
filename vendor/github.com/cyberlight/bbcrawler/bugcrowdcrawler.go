@@ -90,6 +90,7 @@ func NewBugCrowdCrawler(config *HackerOneCrawlerConfig) *BugCrowdCrawler {
 		store: &BugCrowdStore{
 			PathToDb:   config.PathToLocalDb,
 			newRecords: make([]BugCrowdNewProgramsRecord, 0),
+			all: make(map[string]BugCrowdNewProgramsRecord),
 		},
 		fbSync: FireBaseSync{
 			Token:   config.FireBaseToken,
