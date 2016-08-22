@@ -165,8 +165,10 @@ func main() {
 	for {
 		select {
 		case update := <- updatesChan:
+			fmt.Println("<=== Received Updates from telegram")
 			botReceiveUpdate(bot, update)
 		case <-hoCrawler.Done:
+			fmt.Println("<=== Received signal Done: Hackerone")
 			records := hoCrawler.GetNewRecords().([]bbcrawler.HackerOneRecord)
 			if len(records) > 0 {
 				for _, v := range records {
@@ -186,8 +188,10 @@ func main() {
 				}
 			}
 			hoCrawler.ClearNewRecords()
+			fmt.Println("<=== Clear records: Hackerone")
 			doneH1Crawler = true
 		case <-h1HackCrawler.Done:
+			fmt.Println("<=== Received signal Done: Hackerone Hactivity")
 			records := h1HackCrawler.GetNewRecords().([]bbcrawler.H1HactivityRecord)
 			if len(records) > 0 {
 				for _, v := range records {
@@ -207,8 +211,10 @@ func main() {
 				}
 			}
 			h1HackCrawler.ClearNewRecords()
+			fmt.Println("<=== Clear records: Hackerone Hactivity")
 			doneH1Hacktivity = true
 		case <-bugCrowdNewProgCrawler.Done:
+			fmt.Println("<=== Received signal Done: CrowdCom")
 			records := bugCrowdNewProgCrawler.GetNewRecords().([]bbcrawler.BugCrowdNewProgramsRecord)
 			if len(records) > 0 {
 				for _, v := range records {
@@ -224,21 +230,26 @@ func main() {
 				}
 			}
 			bugCrowdNewProgCrawler.ClearNewRecords()
+			fmt.Println("<=== Clear records: CrowdCom")
 			doneBCNewProg = true
 		case <-time.After(2 * time.Minute):
+			fmt.Println("<=== doneH1Crawler: ", doneH1Crawler)
 			if doneH1Crawler {
 				doneH1Crawler = false
 				go hoCrawler.Crawl()
 			}
+			fmt.Println("<=== doneH1Hacktivity: ", doneH1Hacktivity)
 			if doneH1Hacktivity {
 				doneH1Hacktivity = false
 				go h1HackCrawler.Crawl()
 			}
+			fmt.Println("<=== doneBCNewProg: ", doneBCNewProg)
 			if doneBCNewProg {
 				doneBCNewProg = false
 				go bugCrowdNewProgCrawler.Crawl()
 			}
 		case <-time.After(30 * time.Second):
+			fmt.Println("Ping request!")
 			c := http.Client{
 				Timeout: 10*time.Second,
 			}
