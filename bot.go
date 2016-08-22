@@ -164,7 +164,7 @@ func main() {
 
 	for {
 		select {
-		case update := <- updatesChan:
+		case update := <-updatesChan:
 			fmt.Println("<=== Received Updates from telegram")
 			botReceiveUpdate(bot, update)
 		case <-hoCrawler.Done:
@@ -175,10 +175,10 @@ func main() {
 					msg := tgbotapi.NewMessageToChannel(cfg.BotChannel,
 						fmt.Sprintf(
 							"*%s*\n\n" +
-							"```text \n" +
-							"%s" +
-							"```\n" +
-							"%s\n",
+								"```text \n" +
+								"%s" +
+								"```\n" +
+								"%s\n",
 							v.Handle,
 							v.StrippedPolicy,
 							fmt.Sprintf("https://hackerone.com%s", v.Url),
@@ -198,10 +198,10 @@ func main() {
 					msg := tgbotapi.NewMessageToChannel(cfg.BotChannel,
 						fmt.Sprintf(
 							"_Hacktivity_ from *%s*\n" +
-							"```text \n" +
-							"%s\n" +
-							"```\n" +
-							"%s\n",
+								"```text \n" +
+								"%s\n" +
+								"```\n" +
+								"%s\n",
 							v.Reporter.Username,
 							v.Title,
 							v.Url,
@@ -221,7 +221,7 @@ func main() {
 					msg := tgbotapi.NewMessageToChannel(cfg.BotChannel,
 						fmt.Sprintf(
 							"\n_Bugcrowd.com_ new program *%s*\n" +
-							"%s\n",
+								"%s\n",
 							v.Name,
 							v.Link,
 						))
@@ -233,6 +233,12 @@ func main() {
 			fmt.Println("<=== Clear records: CrowdCom")
 			doneBCNewProg = true
 		case <-time.After(2 * time.Minute):
+			fmt.Println("Ping request!")
+			c := http.Client{
+				Timeout: 10 * time.Second,
+			}
+			c.Get(cfg.PingHost)
+
 			fmt.Println("<=== doneH1Crawler: ", doneH1Crawler)
 			if doneH1Crawler {
 				doneH1Crawler = false
@@ -248,13 +254,6 @@ func main() {
 				doneBCNewProg = false
 				go bugCrowdNewProgCrawler.Crawl()
 			}
-		case <-time.After(30 * time.Second):
-			fmt.Println("Ping request!")
-			c := http.Client{
-				Timeout: 10*time.Second,
-			}
-			c.Get(cfg.PingHost)
 		}
-
 	}
 }
