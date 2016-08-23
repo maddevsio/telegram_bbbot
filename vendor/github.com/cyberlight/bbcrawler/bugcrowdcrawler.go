@@ -24,11 +24,14 @@ func (b *BugCrowdCrawler) Crawl() {
 		b.syncDb()
 	} else if err != nil {
 		fmt.Println("<===== Sync Bug crowd error: ", err)
+		b.Done <- true
+		return
 	}
 
 	data, err := b.fetcher.Fetch(b.config.BugCrowdProgramsUrl)
 	if err != nil {
 		fmt.Println(err)
+		b.Done <- true
 		return
 	}
 
@@ -36,6 +39,8 @@ func (b *BugCrowdCrawler) Crawl() {
 	err = b.store.Store(records)
 	if err != nil {
 		fmt.Println("Error storing Bugcrowd: ", err)
+		b.Done <- true
+		return
 	}
 
 	newRecords := b.store.GetNewRecords().([]BugCrowdNewProgramsRecord)

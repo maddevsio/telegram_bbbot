@@ -71,17 +71,21 @@ func (h *H1HacktivityCrawler) Crawl() {
 		h.syncDb()
 	} else if err != nil {
 		fmt.Println("<===== Sync error: ", err)
+		h.Done <- true
+		return
 	}
 
 	data, err := h.fetcher.Fetch(h.config.HacktivitySearchUrl, h.makeQuery(1))
 	if err != nil {
 		fmt.Println(err)
+		h.Done <- true
 		return
 	}
 
 	jsonResponse, err := h.reader.Read(data)
 	if err != nil {
 		fmt.Println(err)
+		h.Done <- true
 		return
 	}
 
@@ -89,6 +93,8 @@ func (h *H1HacktivityCrawler) Crawl() {
 	err = h.store.Store(response)
 	if err != nil {
 		fmt.Println("Error storing Hacktivity: ", err)
+		h.Done <- true
+		return
 	}
 	newRecords := h.store.GetNewRecords().([]H1HactivityRecord)
 	if len(newRecords) > 0 {
