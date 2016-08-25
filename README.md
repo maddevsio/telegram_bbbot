@@ -24,16 +24,16 @@ Telegram Bug Bounty Bot
 
 # Bot configuration
 
-```TELEGRAM_BBBOT_TOKEN``` - Telegram Api token received from @BotFather
-```TELEGRAM_BBBOT_URL``` - Webhook url to bot public web address
-```PORT``` -  Standard heroku ENV variable for port number
-```TELEGRAM_BBBOT_FIREBASE_TOKEN``` - Firebase database token
-```TELEGRAM_BBBOT_FIREBASE_URL``` -  Url to firebase project
-```TELEGRAM_BBBOT_HO_SEARCH_URL``` - HackerOne search url (crawler)
-```TELEGRAM_BBBOT_CHANNEL``` -  Public channel identifier, for example ```@some_channel_name```
-```TELEGRAM_BBBOT_HOST``` - Public bot host url for ping purposes (for disabling sleeping functionality after 30 min of inactivity)
-```TELEGRAM_BBBOT_H1_HACK_SEARCH_URL``` - HackerOne hacktivity url (crawler)
-```TELEGRAM_BBBOT_BUGCROWD_NEW_PROG_URL``` - BugCrowd url for crawling new programs (crawler)
+* ```TELEGRAM_BBBOT_TOKEN``` - Telegram Api token received from @BotFather
+* ```TELEGRAM_BBBOT_URL``` - Webhook url to bot public web address
+* ```PORT``` -  Standard heroku ENV variable for port number
+* ```TELEGRAM_BBBOT_FIREBASE_TOKEN``` - Firebase database token
+* ```TELEGRAM_BBBOT_FIREBASE_URL``` -  Url to firebase project
+* ```TELEGRAM_BBBOT_HO_SEARCH_URL``` - HackerOne search url (crawler)
+* ```TELEGRAM_BBBOT_CHANNEL``` -  Public channel identifier, for example ```@some_channel_name```
+* ```TELEGRAM_BBBOT_HOST``` - Public bot host url for ping purposes (for disabling sleeping functionality after 30 min of inactivity)
+* ```TELEGRAM_BBBOT_H1_HACK_SEARCH_URL``` - HackerOne hacktivity url (crawler)
+* ```TELEGRAM_BBBOT_BUGCROWD_NEW_PROG_URL``` - BugCrowd url for crawling new programs (crawler)
 
 # Bot workflow
 
