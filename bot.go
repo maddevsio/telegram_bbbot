@@ -2,28 +2,29 @@ package main
 
 import (
 	"fmt"
-	"github.com/caarlos0/env"
-	"github.com/gin-gonic/gin"
-	"gopkg.in/telegram-bot-api.v4"
 	"log"
 	"net/http"
-	"strings"
-	"github.com/cyberlight/bbcrawler"
 	"time"
+
+	"github.com/caarlos0/env"
+	"github.com/cyberlight/bbcrawler"
+	"github.com/gin-gonic/gin"
+	"gopkg.in/telegram-bot-api.v4"
 )
 
 type config struct {
-	Token string `env:"TELEGRAM_BBBOT_TOKEN"`
-	Url   string `env:"TELEGRAM_BBBOT_URL"`
-	Port  string `env:"PORT"`
-	FireBaseToken string `env:"TELEGRAM_BBBOT_FIREBASE_TOKEN"`
-	FireBaseUrl string `env:"TELEGRAM_BBBOT_FIREBASE_URL"`
-	PathToLocalDb string `env:"TELEGRAM_BBBOT_PATH_TO_LOCAL_DB"`
-	HOSearchUrl string `env:"TELEGRAM_BBBOT_HO_SEARCH_URL"`
-	BotChannel string `env:"TELEGRAM_BBBOT_CHANNEL"`
-	PingHost   string `env:"TELEGRAM_BBBOT_HOST"`
-	H1HackSearchUrl string `env:"TELEGRAM_BBBOT_H1_HACK_SEARCH_URL"`
+	Token                 string `env:"TELEGRAM_BBBOT_TOKEN"`
+	Url                   string `env:"TELEGRAM_BBBOT_URL"`
+	Port                  string `env:"PORT"`
+	FireBaseToken         string `env:"TELEGRAM_BBBOT_FIREBASE_TOKEN"`
+	FireBaseUrl           string `env:"TELEGRAM_BBBOT_FIREBASE_URL"`
+	PathToLocalDb         string `env:"TELEGRAM_BBBOT_PATH_TO_LOCAL_DB"`
+	HOSearchUrl           string `env:"TELEGRAM_BBBOT_HO_SEARCH_URL"`
+	BotChannel            string `env:"TELEGRAM_BBBOT_CHANNEL"`
+	PingHost              string `env:"TELEGRAM_BBBOT_HOST"`
+	H1HackSearchUrl       string `env:"TELEGRAM_BBBOT_H1_HACK_SEARCH_URL"`
 	BugCrowdNewProgramUrl string `env:"TELEGRAM_BBBOT_BUGCROWD_NEW_PROG_URL"`
+	HackerOneBaseUrl      string `env:"TELEGRAM_BBBOT_H1_BASE_URL"`
 }
 
 var (
@@ -31,64 +32,8 @@ var (
 	TelegramBotApiError = func(err error) error { return fmt.Errorf("Telegram Bot API Error: %s", err.Error()) }
 )
 
-func botReceiveUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update){
+func botReceiveUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 	log.Printf("%+v\n", update)
-
-	if update.Message == nil {
-		return
-	}
-
-	if update.Message.Chat.IsGroup()  {
-		u, err := bot.GetMe()
-		if err != nil {
-			log.Printf("Error: %s", err.Error())
-		}else {
-			if update.Message.NewChatMember != nil {
-				if u.UserName != update.Message.NewChatMember.UserName {
-					_, err := bot.Send(tgbotapi.NewChatAction(update.Message.Chat.ID, tgbotapi.ChatTyping))
-					if err != nil {
-						log.Printf("Error: %s", err.Error())
-					}
-
-					hiText := fmt.Sprintf("Привет! @%s Я баг баунти бот!",
-						update.Message.NewChatMember.UserName)
-					msg := tgbotapi.NewMessage(update.Message.Chat.ID, hiText)
-
-					bot.Send(msg)
-
-					count, err := bot.GetChatMembersCount(update.Message.Chat.ChatConfig())
-					if err == nil {
-						hiText = fmt.Sprintf("Нас уже %d !", count)
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, hiText)
-						bot.Send(msg)
-					}
-				}
-			}
-
-			if update.Message.LeftChatMember != nil {
-				hiText := fmt.Sprintf("Очень жаль! @%s покинул нас :(",
-					update.Message.LeftChatMember.UserName)
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, hiText)
-				bot.Send(msg)
-			}
-		}
-	}
-
-	if bot.IsMessageToMe(*update.Message) {
-		if strings.Contains(update.Message.Text, "что нового?") {
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Пока ничего нового! :)")
-			msg.ReplyToMessageID = update.Message.MessageID
-			bot.Send(msg)
-		}
-	}
-
-	if update.Message.IsCommand() {
-		if strings.Contains(update.Message.Text, "/что_нового") {
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Пока ничего нового! :)")
-			msg.ReplyToMessageID = update.Message.MessageID
-			bot.Send(msg)
-		}
-	}
 }
 
 func initRouting(bot *tgbotapi.BotAPI, cfg config, updateChan chan tgbotapi.Update) {
@@ -111,8 +56,8 @@ func initRouting(bot *tgbotapi.BotAPI, cfg config, updateChan chan tgbotapi.Upda
 		}
 	}
 
-	router.GET("/" + bot.Token, handleWebHook)
-	router.POST("/" + bot.Token, handleWebHook)
+	router.GET("/"+bot.Token, handleWebHook)
+	router.POST("/"+bot.Token, handleWebHook)
 
 	go router.Run(":" + cfg.Port)
 }
@@ -126,10 +71,10 @@ func main() {
 	}
 
 	hoConfig := &bbcrawler.HackerOneCrawlerConfig{
-		FireBaseToken: cfg.FireBaseToken,
-		FireBaseUrl:   cfg.FireBaseUrl,
-		PathToLocalDb: cfg.PathToLocalDb,
-		SearchUrl:     cfg.HOSearchUrl,
+		FireBaseToken:       cfg.FireBaseToken,
+		FireBaseUrl:         cfg.FireBaseUrl,
+		PathToLocalDb:       cfg.PathToLocalDb,
+		SearchUrl:           cfg.HOSearchUrl,
 		HacktivitySearchUrl: cfg.H1HackSearchUrl,
 		BugCrowdProgramsUrl: cfg.BugCrowdNewProgramUrl,
 	}
@@ -174,14 +119,14 @@ func main() {
 				for _, v := range records {
 					msg := tgbotapi.NewMessageToChannel(cfg.BotChannel,
 						fmt.Sprintf(
-							"*%s*\n\n" +
-								"```text \n" +
-								"%s" +
-								"```\n" +
+							"*%s*\n\n"+
+								"```text \n"+
+								"%s"+
+								"```\n"+
 								"%s\n",
 							v.Handle,
 							v.StrippedPolicy,
-							fmt.Sprintf("https://hackerone.com%s", v.Url),
+							fmt.Sprintf(cfg.HackerOneBaseUrl+"%s", v.Url),
 						))
 					msg.ParseMode = "Markdown"
 					bot.Send(msg)
@@ -197,14 +142,14 @@ func main() {
 				for _, v := range records {
 					msg := tgbotapi.NewMessageToChannel(cfg.BotChannel,
 						fmt.Sprintf(
-							"_Hacktivity_ from *%s*\n" +
-								"```text \n" +
-								"%s\n" +
-								"```\n" +
+							"_Hacktivity_ from *%s*\n"+
+								"```text \n"+
+								"%s\n"+
+								"```\n"+
 								"%s\n",
 							v.Reporter.Username,
 							v.Title,
-							v.Url,
+							fmt.Sprintf(cfg.HackerOneBaseUrl+"%s", v.Url),
 						))
 					msg.ParseMode = "Markdown"
 					bot.Send(msg)
@@ -220,7 +165,7 @@ func main() {
 				for _, v := range records {
 					msg := tgbotapi.NewMessageToChannel(cfg.BotChannel,
 						fmt.Sprintf(
-							"\n_Bugcrowd.com_ new program *%s*\n" +
+							"\n_Bugcrowd.com_ new program *%s*\n"+
 								"%s\n",
 							v.Name,
 							v.Link,
@@ -233,7 +178,7 @@ func main() {
 			fmt.Println("<=== Clear records: CrowdCom")
 			doneBCNewProg = true
 		case <-time.After(2 * time.Minute):
-			fmt.Println("Ping request!")
+			fmt.Println("== Ping request ==")
 			c := http.Client{
 				Timeout: 10 * time.Second,
 			}
