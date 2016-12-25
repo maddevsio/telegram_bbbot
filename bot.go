@@ -70,6 +70,8 @@ func main() {
 		panic(ConfigurationError)
 	}
 
+	fmt.Println("<------ TELEGRAM_BBBOT_H1_BASE_URL: ", cfg.HackerOneBaseUrl)
+
 	hoConfig := &bbcrawler.HackerOneCrawlerConfig{
 		FireBaseToken:       cfg.FireBaseToken,
 		FireBaseUrl:         cfg.FireBaseUrl,
@@ -126,7 +128,7 @@ func main() {
 								"%s\n",
 							v.Handle,
 							v.StrippedPolicy,
-							fmt.Sprintf(cfg.HackerOneBaseUrl+"%s", v.Url),
+							fmt.Sprintf("%s%s", cfg.HackerOneBaseUrl, v.Url),
 						))
 					msg.ParseMode = "Markdown"
 					bot.Send(msg)
@@ -149,7 +151,7 @@ func main() {
 								"%s\n",
 							v.Reporter.Username,
 							v.Title,
-							fmt.Sprintf(cfg.HackerOneBaseUrl+"%s", v.Url),
+							fmt.Sprintf("%s%s", cfg.HackerOneBaseUrl, v.Url),
 						))
 					msg.ParseMode = "Markdown"
 					bot.Send(msg)
