@@ -1,6 +1,8 @@
 # telegram_bbbot
 Telegram Bug Bounty Bot
 
+https://telegram.me/bug_bounty_channel
+
 # History
 
 * This bot adopted special for deploying to Heroku
