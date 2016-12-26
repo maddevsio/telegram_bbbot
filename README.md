@@ -1,3 +1,4 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/maddevsio/telegram_bbbot)](https://goreportcard.com/report/github.com/maddevsio/telegram_bbbot)
 # telegram_bbbot
 Telegram Bug Bounty Bot
 
