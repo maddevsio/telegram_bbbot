@@ -50,6 +50,9 @@ https://telegram.me/bug_bounty_channel
 
 * **Note:** If instance of bot at heroku.com restarted all data restored from firebase storage.
 
+# Thanks
+* http://www.kitploit.com/ for sharing the information
+
 # MIT License
 
 Copyright (c) 2016 Maddevs
